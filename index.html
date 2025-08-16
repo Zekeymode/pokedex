@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pokédex Online - Find All 1025 Pokémon In 1 Single Website!</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+        }
+        .pokemon-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .pokemon-card {
+            margin: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .pokemon-card img {
+            height: 150px;
+            width: 150px;
+            object-fit: contain;
+        }
+        .pokemon-name {
+            margin-top: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>All 1025 Pokémon</h1>
+    <div id="pokemonImages" class="pokemon-container">
+    </div>
+
+    <script>
+        const pokemonContainer = document.getElementById('pokemonImages');
+        const pokemonNamesUrl = 'https://gist.githubusercontent.com/killshot13/5b45c0089c3b1a19028bec38aad8fa46/raw/10d30ab4a74ac7e083a3cc6135c605379ddee952/pokemon.txt';
+        let pokemonNames = [];
+
+        async function fetchPokemonNames() {
+            try {
+                const response = await fetch(pokemonNamesUrl);
+                const text = await response.text();
+                pokemonNames = text.split('\n').map(name => name.trim()).filter(name => name.length > 0);
+                displayPokemonImages();
+            } catch (error) {
+                console.error('Error fetching Pokémon names:', error);
+            }
+        }
+
+        function displayPokemonImages() {
+            for (let i = 1; i <= 1025; i++) {
+                const formattedNumber = String(i).padStart(3, '0');
+                const imageUrl = `https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${formattedNumber}.png`;
+                const pokemonName = pokemonNames[i - 1] || `Pokémon #${i}`; // Use fetched name or fallback to number
+
+                const pokemonCard = document.createElement('div');
+                pokemonCard.classList.add('pokemon-card');
+
+                const image = document.createElement('img');
+                image.src = imageUrl;
+                image.alt = pokemonName;
+                image.height = 200;
+
+                const name = document.createElement('div');
+                name.classList.add('pokemon-name');
+                name.textContent = pokemonName;
+
+                pokemonCard.appendChild(image);
+                pokemonCard.appendChild(name);
+                pokemonContainer.appendChild(pokemonCard);
+            }
+        }
+
+        fetchPokemonNames(); // Fetch names and then display images
+    </script>
+</body>
+</html>
